@@ -5,29 +5,25 @@
       <alert :message="message.text" v-if="message.text" @finalizado="alertEnd" :severity="message.severity" :interval="2" />
     </transition>
     <!-- Formulario -->
-    <h5>Formulario de usuarios</h5>
-    <label for="id">
-      <span>id</span>
-      <input type="text" name="id" id="id" disabled :value="actualUser.id" class="form-control">
-    </label>
+    <h5 v-if="id" >ID {{actualUser.id}}</h5>
     <label for="name">
-      <span>name</span>
+      <span>{{ $t('views.name') }}</span>
       <input type="text" name="name" id="name" v-model="actualUser.name" class="form-control">
     </label>
     <label for="email">
-      <span>email</span>
+      <span>{{ $t('views.email') }}</span>
       <input type="email" name="email" id="email" v-model="actualUser.email" class="form-control">
     </label>
     <div class="row">
       <elector :resource-list="actualUser.roles" v-if="actualUser.roles" class="col-3" :master="false" @remove-resource="removeRole">
-        <p class="font-weight-bold">Roles asignados</p>
+        <p class="font-weight-bold">{{ $t('views.asig_rol')}}</p>
       </elector>
       <elector :resource-list="allRoles" v-if="actualUser.roles && allRoles" class="col-3" :master="true" @remove-resource="removeRole" @add-resource="addRole" :assigned-resources="actualUser.roles">
-        <p class="font-weight-bold">Todos los roles</p>
+        <p class="font-weight-bold">{{ $t('views.all_rol') }}</p>
       </elector>
     </div>
-    <button class="btn btn-primary" v-if="id" @click="updateUser">Actualizar usuario</button>
-    <button class="btn btn-primary" v-else @click="addUser">Añadir usuario</button>
+    <button class="btn btn-primary" v-if="id" @click="updateUser">{{ $t('buttons.update')}}</button>
+    <button class="btn btn-primary" v-else @click="addUser">{{ $t('buttons.create')}}</button>
   </section>
 </template>
 
@@ -45,7 +41,6 @@ export default {
           this.actualUser = user.data;
         })
         .catch(error => {
-          this.message.text = error;
           this.message.severity = "danger";
         });
     } else {
@@ -57,7 +52,8 @@ export default {
         this.allRoles = roles.data;
       })
       .catch(error => {
-        this.message.text = error;
+        console.error(error);
+        this.message.text = this.$t("messages.error.unexpected");
         this.message.severity = "danger";
       });
   },
@@ -85,17 +81,20 @@ export default {
     alertEnd() {
       this.message.text = null;
     },
-    addRole(role){
+    addRole(role) {
       this.actualUser.roles.push(role);
     },
-    removeRole(role){
-      this.actualUser.roles.splice(this.actualUser.roles.findIndex(e=> e.id == role.id),1);
+    removeRole(role) {
+      this.actualUser.roles.splice(
+        this.actualUser.roles.findIndex(e => e.id == role.id),
+        1
+      );
     },
     addUser() {
       crudService
         .add("users", this.actualUser)
         .then(() => {
-          this.message.text = "usuario añadido";
+          this.message.text = this.$t("messages.info.add");
           this.message.severity = "success";
         })
         .catch(error => {
@@ -107,7 +106,7 @@ export default {
       crudService
         .update("users", this.actualUser)
         .then(() => {
-          this.message.text = "usuario actualizado";
+          this.message.text = this.$t("messages.info.update");
           this.message.severity = "success";
         })
         .catch(error => {

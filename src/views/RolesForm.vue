@@ -5,25 +5,21 @@
         <alert :message="message.text" v-if="message.text" @finalizado="alertEnd" :severity="message.severity" :interval="2" />
     </transition>
     <!-- Formulario -->
-    <h5>Formulario de roles</h5>
-    <label for="id" v-if="id">
-      <span>id</span>
-      <input type="text" name="id" id="id" :value="actualRol.id" class="form-control" disabled>
-    </label>
+    <h5 v-if="id">ID {{actualRol.id}}</h5>
     <label for="name">
-      <span>name</span>
+      <span>{{ $t('views.name') }}</span>
       <input type="text" name="id" id="name" class="form-control" v-model="actualRol.name">
     </label>
     <div class="row">
     <elector :resource-list="actualRol.privileges" class="col-3" v-if="actualRol.privileges" :master="false" @remove-resource="removePrivilege">
-      <p class="font-weight-bold">Privilegios asignados</p>
+      <p class="font-weight-bold">{{ $t('views.asig_priv') }}</p>
     </elector>
     <elector :resource-list="allPrivileges" class="col-3" v-if="allPrivileges && actualRol.privileges " :master="true" :assigned-resources="actualRol.privileges" @add-resource="addPrivilege" @remove-resource="removePrivilege">
-      <p class="font-weight-bold">Todos los privilegios</p>
+      <p class="font-weight-bold">{{ $t('views.all_priv') }}</p>
     </elector>
     </div>
-    <button class="btn btn-primary" @click="udpateRol" v-if="id">Actualizar rol</button>
-    <button class="btn btn-primary" @click="addRole" v-else>Añadir rol</button>
+    <button class="btn btn-primary" @click="udpateRol" v-if="id">{{ $t('buttons.update') }}</button>
+    <button class="btn btn-primary" @click="addRole" v-else>{{ $t('buttons.create') }}</button>
 </section>
 </template>
 
@@ -88,20 +84,19 @@ export default {
     },
     udpateRol(){
       crudService.update('roles',this.actualRol).then(()=>{
-        this.message.text = 'rol actualizado';
+        this.message.text = this.$t('messages.info.update');
         this.message.severity = 'info'
-        //this.$router.push('/roles')
       }).catch(error=>{
-        this.message = error;
+        this.message = this.$t('messages.error.update');
         console.log(error);
       })
     },
     addRole(){
       crudService.add('roles',this.actualRol).then(()=>{
-        this.message = 'rol añadido'
+        this.message = this.$t('messages.info.add')
         this.$router.push('/roles')
       }).catch(error=>{
-        this.message = error;
+        this.message = this.$t('messages.error.add');
         console.log(error);
       })
     }

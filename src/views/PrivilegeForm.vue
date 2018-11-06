@@ -7,15 +7,14 @@
       <alert :message="message" v-if="message" @finalizado="alertEnd" severity="warning" :interval="2"/>
     </transition>
     <!-- Formulario -->
-    <h5>formulario de privilegios</h5>
+    <h5 v-if="id">ID  {{privilege.id}}</h5>
     <label for="name">
-      <span>Nombre del privilegio</span>
+      <span>{{ $t('views.name') }}</span>
       <input type="text" name="name" id="name" v-model="privilege.name" placeholder="Escriba el nombre del nuevo privilegio" class="form-control">
     </label>
     <button class="btn btn-primary" @click="sendForm">
-      <span v-if="id">actualizar</span>
-      <span v-else>añadir</span>
-      <span>privilegio</span>
+      <span v-if="id">{{ $t('buttons.update') }}</span>
+      <span v-else>{{ $t('buttons.create') }}</span>
     </button>
   </section>
 </template>
@@ -62,7 +61,7 @@ export default {
           })
           .catch(error => {
             console.error(error);
-            this.message = "no su ha podido actualizar el privilegio";
+            this.message = "no se ha podido actualizar el privilegio";
           });
       } else {
         crudService
