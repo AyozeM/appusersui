@@ -5,10 +5,12 @@ import privilegesForm from '../views/PrivilegeForm.vue';
 import resourceList from '../views/resourceList.vue';
 import rolesForm from '../views/RolesForm.vue';
 import usersForm from '../views/UsersForm.vue';
+import loginComponent from '../views/login.vue';
+import { store } from "../store/store";
 Vue.use(vueRouter);
 
 const routes = [
-  { path: '/', component: dashboard, redirect: "/users" },
+  { path: '/', component: dashboard, redirect: "/login" },
   {
     path: '/users', component: dashboard, children: [
       { path: '', component: resourceList, props: { resource: 'users' } },
@@ -30,6 +32,9 @@ const routes = [
       { path: 'add', component: privilegesForm },
     ]
   },
+  { path: '/login', component: loginComponent }
 ]
 
-export const router = new vueRouter({ routes })
+const router = new vueRouter({ routes })
+router.beforeEach((to, from, next) => !store.state.userToken && to.path != '/login' ? next('/login') : next())
+export { router };

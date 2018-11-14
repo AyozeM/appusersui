@@ -1,0 +1,97 @@
+<template>
+  <section class="container">
+    <!-- Mensajes -->
+    <transition name="animate.css" enter-active-class="animated bounceInDown" leave-active-class="animated bounceOutUp">
+      <alert :message="message.text" v-if="message.text" @finalizado="alertEnd" :severity="message.severity" :interval="2" />
+    </transition>
+
+    <form method="POST"  @submit.prevent="login" class="row flex-column col-lg-6 offset-lg-2">
+      <label for="username" class="row">
+        <span class="col-12 mb-2">{{$t('views.username')}}</span>
+        <input type="text" name="username" id="username" v-model="form.name" class="form-control col-10" :class="{'is-invalid':checkers.name == false,'is-valid':checkers.name == true}" @blur="checkInvalidInput('name')" required>
+      </label>
+      <label for="password" class="row">
+        <span class="col-12 mb-2">{{$t('views.password')}}</span>
+        <input :type="typeInputPassword" name="password" id="password" v-model="form.password" class="form-control col-10" :class="{'is-invalid':checkers.password == false,'is-valid':checkers.password == true}" @blur="checkInvalidInput('password')" required>
+        <label for="showPassword" class="btn btn-primary col-1 offset-lg-1">
+          <input type="checkbox" id="showPassword" v-model="showPassword" class="d-none">
+          <i class="far fa-eye" v-if="!showPassword"></i>
+          <i class="far fa-eye-slash" v-else></i>
+        </label>
+      </label>
+      <label for="remember" class="row">
+        <span class="mr-2">{{$t('views.remember')}}</span>
+        <checkbox-vue v-model="remember" id="remember"/>
+      </label>
+      <button class="btn btn-primary" type="submit" v-if="complete">{{$t('views.login')}}</button>
+    </form>
+  </section>
+</template>
+
+<script>
+import axios from "axios";
+import { login } from "../services/crudService.js";
+import checkboxVue from "bootstrap-vue/es/components/form-checkbox/form-checkbox";
+import alert from '../components/message';
+export default {
+  components: { checkboxVue, alert },
+  mounted() {
+    let accessData = localStorage.getItem("accessData");
+    if (accessData) {
+      this.form = JSON.parse(accessData);
+      this.login();
+    }
+  },
+  data() {
+    return {
+      form: {
+        name: null,
+        password: null
+      },
+      checkers: {
+        name: null,
+        password: null
+      },
+      showPassword: false,
+      remember: false,
+      message: {
+        text: null,
+        severity: "danger"
+      }
+    };
+  },
+  computed: {
+    complete() {
+      return this.form.name && this.form.password;
+    },
+    typeInputPassword() {
+      return this.showPassword ? "text" : "password";
+    }
+  },
+  methods: {
+    alertEnd(){
+      this.message.text = null;
+    },
+    login() {
+      login(this.form)
+        .then(token => {
+          this.$store.commit("setToken", token.data);
+          this.$store.commit("setUsername", this.form.name);
+          if (this.remember) {
+            localStorage.setItem("accessData", JSON.stringify(this.form));
+          }
+          this.$router.push("/users");
+        })
+        .catch(error => {
+          this.checkers.name = false;
+          this.checkers.password = false;
+          this.message.text = 'Ha fallado la autenticacion, comprueba tu usuario o contraseña';
+          console.error(error);
+        });
+    },
+    checkInvalidInput(input) {
+      this.checkers[input] = this.form[input] ? true : false;
+    }
+  }
+};
+</script>

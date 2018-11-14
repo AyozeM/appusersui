@@ -28,7 +28,12 @@ export default {
       all_rol: 'todos los roles',
       all_priv: 'todos los privilegios',
       name: 'nombre',
-      email: 'correo electronico'
+      email: 'correo electronico',
+      username:'nombre de usuario',
+      password: 'contraseña',
+      remember: 'recuérdame',
+      login: 'iniciar sesión',
+      welcome: 'Bienvenido'
     },
     messages: {
       error: {

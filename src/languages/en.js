@@ -22,12 +22,17 @@ export default {
       },
     },
     views: {
-      asig_rol: 'actual roles',
-      asig_priv: 'actual privileges',
+      asig_rol: 'current roles',
+      asig_priv: 'current privileges',
       all_rol: 'all roles',
       all_priv: 'all privileges',
       name: 'name',
       email: 'email',
+      username:'username',
+      password:'password',
+      remember: 'remember  me',
+      login:'log in',
+      welcome:'welcome',
     },
     messages: {
       error: {
