@@ -32,7 +32,16 @@ export default {
       password:'password',
       remember: 'remember  me',
       login:'log in',
+      logout:'logout',
       welcome:'welcome',
+      newPassword:'type new password',
+      repeatPassword: 'confirm your password',
+      changePassword: 'change password',
+      lists:{
+        user:'users list',
+        role:'roles list',
+        privilege:'privileges list'
+      }
     },
     messages: {
       error: {

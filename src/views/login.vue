@@ -1,36 +1,40 @@
 <template>
-  <section class="container">
+  <section class="justify-content-center mt-4">
     <!-- Mensajes -->
     <transition name="animate.css" enter-active-class="animated bounceInDown" leave-active-class="animated bounceOutUp">
       <alert :message="message.text" v-if="message.text" @finalizado="alertEnd" :severity="message.severity" :interval="2" />
     </transition>
-
-    <form method="POST"  @submit.prevent="login" class="row flex-column col-lg-6 offset-lg-2">
-      <label for="username" class="row">
-        <span class="col-12 mb-2">{{$t('views.username')}}</span>
-        <input type="text" name="username" id="username" v-model="form.name" class="form-control col-10" :class="{'is-invalid':checkers.name == false,'is-valid':checkers.name == true}" @blur="checkInvalidInput('name')" required>
-      </label>
-      <label for="password" class="row">
-        <span class="col-12 mb-2">{{$t('views.password')}}</span>
-        <input :type="typeInputPassword" name="password" id="password" v-model="form.password" class="form-control col-10" :class="{'is-invalid':checkers.password == false,'is-valid':checkers.password == true}" @blur="checkInvalidInput('password')" required>
-        <label for="showPassword" class="btn btn-primary col-1 offset-lg-1">
-          <input type="checkbox" id="showPassword" v-model="showPassword" class="d-none">
-          <i class="far fa-eye" v-if="!showPassword"></i>
-          <i class="far fa-eye-slash" v-else></i>
+    <header class="d-flex border-bottom justify-content-center">
+      <h1>{{$t('views.login')}}</h1>
+    </header>
+    <div class="row justify-content-center">
+      <form method="POST"  @submit.prevent="login" class="row flex-column col-lg-4">
+        <label for="username" class="row">
+          <span class="col-12 mb-2">{{$t('views.username')}}</span>
+          <input type="text" name="username" id="username" v-model="form.name" class="form-control col-10" :class="{'is-invalid':checkers.name == false,'is-valid':checkers.name == true}" @blur="checkInvalidInput('name')" required>
         </label>
-      </label>
-      <label for="remember" class="row">
-        <span class="mr-2">{{$t('views.remember')}}</span>
-        <checkbox-vue v-model="remember" id="remember"/>
-      </label>
-      <button class="btn btn-primary" type="submit" v-if="complete">{{$t('views.login')}}</button>
-    </form>
+        <label for="password" class="row">
+          <span class="col-12 mb-2">{{$t('views.password')}}</span>
+          <input :type="typeInputPassword" name="password" id="password" v-model="form.password" class="form-control col-10" :class="{'is-invalid':checkers.password == false,'is-valid':checkers.password == true}" @blur="checkInvalidInput('password')" required>
+          <label for="showPassword" class="btn btn-primary col-1 offset-lg-1">
+            <input type="checkbox" id="showPassword" v-model="showPassword" class="d-none">
+            <i class="far fa-eye" v-if="!showPassword"></i>
+            <i class="far fa-eye-slash" v-else></i>
+          </label>
+        </label>
+        <label for="remember" class="row">
+          <span class="mr-2">{{$t('views.remember')}}</span>
+          <checkbox-vue v-model="remember" id="remember"/>
+        </label>
+        <button class="btn btn-primary" type="submit" v-if="complete"><span>{{$t('views.login')}}</span><i v-show="showSpinner" class="fas fa-spinner fa-pulse spinner ml-3" ></i></button>
+      </form>
+    </div>
   </section>
 </template>
 
 <script>
 import axios from "axios";
-import { login } from "../services/crudService.js";
+import { login,getAuthority } from "../services/crudService.js";
 import checkboxVue from "bootstrap-vue/es/components/form-checkbox/form-checkbox";
 import alert from '../components/message';
 export default {
@@ -57,7 +61,8 @@ export default {
       message: {
         text: null,
         severity: "danger"
-      }
+      },
+      showSpinner: false
     };
   },
   computed: {
@@ -73,12 +78,18 @@ export default {
       this.message.text = null;
     },
     login() {
+      this.showSpinner = true;
       login(this.form)
         .then(token => {
-          this.$store.commit("setToken", token.data);
+          this.$store.commit("setToken", token.data.token);
           this.$store.commit("setUsername", this.form.name);
+          return getAuthority(this.form.name);
+        })
+        .then(authority=>{
+
+          this.$store.commit('setAuth', authority.data)
           if (this.remember) {
-            localStorage.setItem("accessData", JSON.stringify(this.form));
+            localStorage.setItem("accessData", JSON.stringify({...this.form,authority:authority.data}));
           }
           this.$router.push("/users");
         })

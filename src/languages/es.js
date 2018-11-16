@@ -33,7 +33,16 @@ export default {
       password: 'contraseña',
       remember: 'recuérdame',
       login: 'iniciar sesión',
-      welcome: 'Bienvenido'
+      logout: 'cerrar sesión',
+      welcome: 'Bienvenido',
+      newPassword:'escribe una contraseña nueva',
+      repeatPassword: 'confirma la contraseña',
+      changePassword: 'cambiar contraseña',
+      lists:{
+        user:'listado de usuarios',
+        role:'listado de roles',
+        privilege:'listado de privilegios'
+      }
     },
     messages: {
       error: {

@@ -47,3 +47,5 @@ export const remove = (resource, id) => axios.delete(`${baseurl}/${resource}/rem
  * @param {Object} credentials usuario y contraseña con el que se desea acceder al servidor
  */
 export const login = credentials => axios.post(`${baseurl}/login`, credentials);
+
+export const getAuthority = name => axios.get(`${baseurl}/users/authority/${name}`,{headers:{Authorization:store.state.userToken}});

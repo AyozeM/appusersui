@@ -20,17 +20,18 @@
           <span>{{$t('views.password')}}</span>
           <input type="text" name="password" id="password" v-model="actualUser.password" class="form-control">
         </label>
-        <label for="changePassword" class="btn btn-primary" :class="{active:changePassword}">
-          <span>Cambiar contraseña</span>
+        <br>
+        <label for="changePassword" class="btn btn-primary" :class="{active:changePassword.view}">
+          <span>{{$t('views.changePassword')}}</span>
           <input type="checkbox" name="changePassword" id="changePassword" class="d-none" v-model="changePassword.view">
         </label>
         <section v-if="changePassword.view">
           <label for="newPassword">
-            <span>Nueva contraseña</span>
+            <span>{{$t('views.newPassword')}}</span>
             <input type="text" name="newPassword" id="newPassword" class="form-control" v-model="changePassword.newPassword.value" @blur="inputsBlur('newPassword')">
           </label>
           <label for="repearPassword">
-            <span>Repita la contraseña</span>
+            <span>{{$t('views.repeatPassword')}}</span>
             <input type="text" name="repearPassword" id="repearPassword" class="form-control" v-model="changePassword.confirmPassword.value" @blur="inputsBlur('confirmPassword')" :class="{'is-valid':valueNewPassword,'is-invalid':!valueNewPassword}">
           </label>
         </section>
@@ -67,6 +68,7 @@ export default {
         });
     } else {
       this.actualUser.roles = [];
+      this.changePassword.view = true;
     }
     crudService
       .getAll("roles")
@@ -94,7 +96,7 @@ export default {
       },
       allRoles: null,
       changePassword:{
-        view:true,
+        view:false,
         newPassword:{
           blur:false,
           value:''

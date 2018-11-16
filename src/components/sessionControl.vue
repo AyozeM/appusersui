@@ -1,7 +1,7 @@
 <template>
   <section v-if="username">
     <p>{{$t('views.welcome')}} {{username}}</p>
-    <button class="btn btn-secondary" @click="logOut">Desconectar</button>
+    <button class="btn btn-secondary" @click="logOut">{{$t('views.logout')}}</button>
   </section>
 </template>
 
