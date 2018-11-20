@@ -11,7 +11,7 @@
       <form method="POST"  @submit.prevent="login" class="row flex-column col-lg-4">
         <label for="username" class="row">
           <span class="col-12 mb-2">{{$t('views.username')}}</span>
-          <input type="text" name="username" id="username" v-model="form.name" class="form-control col-10" :class="{'is-invalid':checkers.name == false,'is-valid':checkers.name == true}" @blur="checkInvalidInput('name')" required>
+          <input type="email" name="username" id="username" v-model="form.email" class="form-control col-10" :class="{'is-invalid':checkers.email == false,'is-valid':checkers.email == true}" @blur="checkInvalidInput('name')" required>
         </label>
         <label for="password" class="row">
           <span class="col-12 mb-2">{{$t('views.password')}}</span>
@@ -22,10 +22,12 @@
             <i class="far fa-eye-slash" v-else></i>
           </label>
         </label>
-        <label for="remember" class="row">
-          <span class="mr-2">{{$t('views.remember')}}</span>
-          <checkbox-vue v-model="remember" id="remember"/>
-        </label>
+        <div class="row justify-content-between">
+          <checkbox-vue v-model="remember" id="remember">
+            <span >{{$t('views.remember')}}</span>
+          </checkbox-vue>
+          <router-link to="/register">{{$t('views.createAccount')}}</router-link>
+        </div>
         <button class="btn btn-primary" type="submit" v-if="complete"><span>{{$t('views.login')}}</span><i v-show="showSpinner" class="fas fa-spinner fa-pulse spinner ml-3" ></i></button>
       </form>
     </div>
@@ -49,11 +51,11 @@ export default {
   data() {
     return {
       form: {
-        name: null,
+        email: null,
         password: null
       },
       checkers: {
-        name: null,
+        email: null,
         password: null
       },
       showPassword: false,
@@ -67,7 +69,7 @@ export default {
   },
   computed: {
     complete() {
-      return this.form.name && this.form.password;
+      return this.form.email && this.form.password;
     },
     typeInputPassword() {
       return this.showPassword ? "text" : "password";
@@ -81,9 +83,11 @@ export default {
       this.showSpinner = true;
       login(this.form)
         .then(token => {
+          console.log(token.data);
           this.$store.commit("setToken", token.data.token);
-          this.$store.commit("setUsername", this.form.name);
-          return getAuthority(this.form.name);
+          this.$store.commit("setUsername", this.form.email);
+          this.$store.commit('setUser_name',token.data.name);
+          return getAuthority(this.form.email);
         })
         .then(authority=>{
 
@@ -94,7 +98,8 @@ export default {
           this.$router.push("/users");
         })
         .catch(error => {
-          this.checkers.name = false;
+          this.showSpinner = false;
+          this.checkers.email = false;
           this.checkers.password = false;
           this.message.text = 'Ha fallado la autenticacion, comprueba tu usuario o contraseña';
           console.error(error);

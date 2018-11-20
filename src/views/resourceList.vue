@@ -1,5 +1,5 @@
 <template>
-  <section class="mt-5">
+  <section class="mt-5 mr-2">
     <!-- Mensajes -->
     <transition name="animate.css" enter-active-class="animated bounceInDown" leave-active-class="animated bounceOutUp">
         <alert :message="message.text" v-if="message.text" @finalizado="alertEnd" :severity="message.severity" :interval="2" />
@@ -12,10 +12,10 @@
     <div class="row justify-content-end" v-if="userAuth > 1">
       <router-link to="add" class="btn btn-primary" append>{{ $t('buttons.add') }}&nbsp;&nbsp;<i class="fas fa-plus"></i></router-link>
       </div>
-    <p class="row font-weight-bold border-bottom">
+    <p class="row font-weight-bold border-bottom" v-show="!spinner">
       <span class="col-1">ID</span>
       <span class="col-3">{{$t('views.name')}}</span>
-      <span class="col-3">{{$t('views.email')}}</span>
+      <span class="col-3" v-show="resources[0].email">{{$t('views.email')}}</span>
     </p>
     <p v-for="(resourceItem,i) in resources" :key="i" class="row" v-if="!spinner">
       <span class="col-1 font-weight-bold">{{resourceItem.id}}</span>

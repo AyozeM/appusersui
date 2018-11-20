@@ -41,7 +41,11 @@ export default {
         user:'users list',
         role:'roles list',
         privilege:'privileges list'
-      }
+      },
+      createAccount:'create account',
+      register:'register',
+      backLogin: 'back to home',
+      create:'create'
     },
     messages: {
       error: {

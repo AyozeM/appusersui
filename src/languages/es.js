@@ -42,7 +42,11 @@ export default {
         user:'listado de usuarios',
         role:'listado de roles',
         privilege:'listado de privilegios'
-      }
+      },
+      createAccount:'crear una cuenta',
+      register:'registro',
+      backLogin:'volver a inicio',
+      create:'crear'
     },
     messages: {
       error: {

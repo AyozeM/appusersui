@@ -49,3 +49,5 @@ export const remove = (resource, id) => axios.delete(`${baseurl}/${resource}/rem
 export const login = credentials => axios.post(`${baseurl}/login`, credentials);
 
 export const getAuthority = name => axios.get(`${baseurl}/users/authority/${name}`,{headers:{Authorization:store.state.userToken}});
+
+export const createNewAccount = user => axios.post(`${baseurl}/users/register`,user);
