@@ -15,7 +15,7 @@
     <p class="row font-weight-bold border-bottom" v-show="!spinner">
       <span class="col-1">ID</span>
       <span class="col-3">{{$t('views.name')}}</span>
-      <span class="col-3" v-show="resources[0].email">{{$t('views.email')}}</span>
+      <span class="col-3" v-show="resources && resources[0].email">{{$t('views.email')}}</span>
     </p>
     <p v-for="(resourceItem,i) in resources" :key="i" class="row" v-if="!spinner">
       <span class="col-1 font-weight-bold">{{resourceItem.id}}</span>
@@ -56,7 +56,7 @@ export default {
     ...mapState(['userAuth']),
     resourceSingular(){
       return this.resource.substr(0,this.resource.length-1);
-    }
+    },
   },
   methods: {
     getInfo() {

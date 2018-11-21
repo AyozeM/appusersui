@@ -16,12 +16,8 @@
           <span>{{ $t('views.email') }}</span>
           <input type="email" name="email" id="email" v-model="actualUser.email" class="form-control">
         </label>
-        <label for="password" v-if="!id">
-          <span>{{$t('views.password')}}</span>
-          <input type="text" name="password" id="password" v-model="actualUser.password" class="form-control">
-        </label>
         <br>
-        <label for="changePassword" class="btn btn-primary" :class="{active:changePassword.view}">
+        <label for="changePassword" class="btn btn-primary" :class="{active:changePassword.view}" v-show="id">
           <span>{{$t('views.changePassword')}}</span>
           <input type="checkbox" name="changePassword" id="changePassword" class="d-none" v-model="changePassword.view">
         </label>
@@ -45,17 +41,20 @@
         </elector>
       </div>
     </div>
-    <button class="btn btn-primary" v-if="id" @click="updateUser">{{ $t('buttons.update')}}</button>
-    <button class="btn btn-primary" v-else @click="addUser">{{ $t('buttons.create')}}</button>
+    <loading-button :isLoading="showSpinner" @press-down="methodSwitch">
+      <span v-if="id">{{ $t('buttons.update')}}</span>
+      <span v-else>{{ $t('buttons.create')}}</span>
+    </loading-button>
   </section>
 </template>
 
 <script>
+import loadingButton from "../components/loadingButton";
 import alert from "../components/message";
 import * as crudService from "../services/crudService.js";
 import elector from "../components/resourceSelector/resourceElector";
 export default {
-  components: { alert, elector },
+  components: { alert, elector, loadingButton },
   mounted() {
     if (this.id) {
       crudService
@@ -92,33 +91,37 @@ export default {
         name: null,
         email: null,
         roles: null,
-        password:null
+        password: null
       },
       allRoles: null,
-      changePassword:{
-        view:false,
-        newPassword:{
-          blur:false,
-          value:''
+      changePassword: {
+        view: false,
+        newPassword: {
+          blur: false,
+          value: ""
         },
-        confirmPassword:{
-          blur:false,
-          value:''
+        confirmPassword: {
+          blur: false,
+          value: ""
         }
       },
-
+      showSpinner: false
     };
   },
   computed: {
     id() {
       return this.$route.params.id || null;
     },
-    valueNewPassword(){
-      return (this.changePassword.newPassword.value == this.changePassword.confirmPassword.value) && (this.changePassword.newPassword.value.length > 1 )
+    valueNewPassword() {
+      return (
+        this.changePassword.newPassword.value ==
+          this.changePassword.confirmPassword.value &&
+        this.changePassword.newPassword.value.length > 1
+      );
     }
   },
   methods: {
-    inputsBlur(input){
+    inputsBlur(input) {
       this.changePassword[input].blur = true;
     },
     alertEnd() {
@@ -133,35 +136,36 @@ export default {
         1
       );
     },
-    addUser() {
-      crudService
-        .add("users", this.actualUser)
-        .then(() => {
-          this.message.text = this.$t("messages.info.add");
-          this.message.severity = "success";
-        })
-        .catch(error => {
-          this.message.text = error;
-          this.message.severity = "danger";
-        });
-    },
-    updateUser() {
-      if(this.changePassword.view && !this.valueNewPassword){
-        this.message.text = 'Las contraseñas tienen que coincidir'
-        this.message.severity = 'danger'
-      }else{
-        crudService
-          .update("users", this.actualUser)
-          .then(() => {
-            this.message.text = this.$t("messages.info.update");
-            this.message.severity = "success";
-          })
-          .catch(error => {
-            this.message.text = error;
-            this.message.severity = "danger";
-          });
+    methodSwitch() {
+      this.showSpinner = true;
+      const ok = () => {
+        this.message.text = this.id
+          ? this.$t("messages.info.update")
+          : this.$t("messages.info.add");
+        this.message.severity = "success";
+      };
+      const fail = error => {
+        this.message.text = error;
+        this.message.severity = "danger";
+      };
+      const final = () =>{
+        this.showSpinner = false;
       }
-    }
+      let failNewPassword = !this.changePassword.view || this.changePassword.newPassword.value == this.changePassword.confirmPassword.value && this.changePassword.newPassword.value.length > 0;
+
+      if(failNewPassword){
+        this.actualUser.password = this.changePassword.newPassword.value;
+        if(this.id){
+          crudService.update('users',this.actualUser).then(ok).catch(fail).then(final);
+        }else{
+          crudService.add('users',this.actualUser).then(ok).catch(fail).then(final);
+        }
+      }else{
+        this.message.text = 'Las contraseñas han de coincidir';
+        this.message.severity = 'danger';
+        this.showSpinner = false;
+      }
+    },
   }
 };
 </script>

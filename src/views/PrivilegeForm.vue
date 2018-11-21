@@ -12,18 +12,21 @@
       <span>{{ $t('views.name') }}</span>
       <input type="text" name="name" id="name" v-model="privilege.name" placeholder="Escriba el nombre del nuevo privilegio" class="form-control">
     </label>
-    <button class="btn btn-primary" @click="sendForm">
+    <radio-group v-model="privilege.authorization" :options="authorities" name="authorities"/>
+    <loading-button :isLoading="showSpinner" @press-down="sendForm">
       <span v-if="id">{{ $t('buttons.update') }}</span>
       <span v-else>{{ $t('buttons.create') }}</span>
-    </button>
+    </loading-button>
   </section>
 </template>
 
 <script>
 import * as crudService from "../services/crudService.js";
 import alert from "../components/message";
+import radioGroup from "bootstrap-vue/es/components/form-radio/form-radio-group";
+import loadingButton from "../components/loadingButton";
 export default {
-  components: { alert },
+  components: { alert, radioGroup, loadingButton },
   mounted() {
     if (this.id) {
       crudService
@@ -37,22 +40,32 @@ export default {
         });
     }
   },
-  computed: {
-    id() {
-      return this.$route.params.id || null;
-    }
-  },
   data() {
     return {
+      showSpinner:false,
       message: null,
       privilege: {
         id: 0,
-        name: null
+        name: null,
+        authorization: null
       }
     };
   },
+  computed: {
+    id() {
+      return this.$route.params.id || null;
+    },
+    authorities() {
+      return [
+        { text: this.$t("views.get"), value: 1 },
+        { text: this.$t("views.add"), value: 2 },
+        { text: this.$t("views.updateRemove"), value: 3 }
+      ];
+    }
+  },
   methods: {
     sendForm() {
+      this.showSpinner = true;
       if (this.id) {
         crudService
           .update("privileges", this.privilege)
@@ -62,6 +75,8 @@ export default {
           .catch(error => {
             console.error(error);
             this.message = "no se ha podido actualizar el privilegio";
+          }).then(()=>{
+            this.showSpinner = true;
           });
       } else {
         crudService
@@ -72,6 +87,8 @@ export default {
           .catch(error => {
             console.error(error);
             this.message = "no su ha podido añadir el privilegio";
+          }).then(()=> {
+            this.showSpinner = false;
           });
       }
     },

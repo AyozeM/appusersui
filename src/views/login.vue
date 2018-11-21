@@ -28,7 +28,9 @@
           </checkbox-vue>
           <router-link to="/register">{{$t('views.createAccount')}}</router-link>
         </div>
-        <button class="btn btn-primary" type="submit" v-if="complete"><span>{{$t('views.login')}}</span><i v-show="showSpinner" class="fas fa-spinner fa-pulse spinner ml-3" ></i></button>
+        <loading-button :isLoading="showSpinner" v-show="complete">
+          <span>{{$t('views.login')}}</span>
+        </loading-button>
       </form>
     </div>
   </section>
@@ -36,11 +38,12 @@
 
 <script>
 import axios from "axios";
+import loadingButton from '../components/loadingButton';
 import { login,getAuthority } from "../services/crudService.js";
 import checkboxVue from "bootstrap-vue/es/components/form-checkbox/form-checkbox";
 import alert from '../components/message';
 export default {
-  components: { checkboxVue, alert },
+  components: { checkboxVue, alert, loadingButton },
   mounted() {
     let accessData = localStorage.getItem("accessData");
     if (accessData) {

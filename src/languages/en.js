@@ -45,7 +45,10 @@ export default {
       createAccount:'create account',
       register:'register',
       backLogin: 'back to home',
-      create:'create'
+      create:'create',
+      add:'add',
+      get:'get',
+      updateRemove: 'update and remove'
     },
     messages: {
       error: {

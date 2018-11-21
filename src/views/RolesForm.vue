@@ -18,17 +18,21 @@
       <p class="font-weight-bold">{{ $t('views.all_priv') }}</p>
     </elector>
     </div>
-    <button class="btn btn-primary" @click="udpateRol" v-if="id">{{ $t('buttons.update') }}</button>
-    <button class="btn btn-primary" @click="addRole" v-else>{{ $t('buttons.create') }}</button>
+    <login-button :isLoading="showSpinner" @press-down="switchMehtod">
+      <span v-if="id">{{ $t('buttons.update') }}</span>
+      <span v-else>{{ $t('buttons.create') }}</span>
+    </login-button>
+
 </section>
 </template>
 
 <script>
 import alert from "../components/message";
+import loginButton from '../components/loadingButton';
 import * as crudService from "../services/crudService.js";
 import elector from "../components/resourceSelector/resourceElector.vue";
 export default {
-  components: { alert, elector },
+  components: { alert, elector, loginButton },
   mounted() {
     if (this.id) {
       crudService
@@ -64,7 +68,8 @@ export default {
         name: null,
         privileges: null
       },
-      allPrivileges: null
+      allPrivileges: null,
+      showSpinner: false
     };
   },
   computed: {
@@ -82,23 +87,27 @@ export default {
     removePrivilege(privilege){
       this.actualRol.privileges.splice(this.actualRol.privileges.findIndex(e=> e.id == privilege.id),1);
     },
-    udpateRol(){
-      crudService.update('roles',this.actualRol).then(()=>{
-        this.message.text = this.$t('messages.info.update');
+    switchMehtod(){
+      this.showSpinner = true;
+
+      const ok = () =>{
+        this.message.text = this.id ? this.$t('messages.info.update') : this.$t('messages.info.add') ;
         this.message.severity = 'info'
-      }).catch(error=>{
-        this.message = this.$t('messages.error.update');
-        console.log(error);
-      })
-    },
-    addRole(){
-      crudService.add('roles',this.actualRol).then(()=>{
-        this.message = this.$t('messages.info.add')
-        this.$router.push('/roles')
-      }).catch(error=>{
-        this.message = this.$t('messages.error.add');
-        console.log(error);
-      })
+      }
+      const fail = error =>{
+        console.error(error);
+        this.message = this.$t('messages.error.update')
+        this.message.severity = 'danger'
+      }
+      const final = () =>{
+        this.showSpinner = false;
+      }
+
+      if(this.id){
+        crudService.update('roles',this.actualRol).then(ok).catch(fail).then(final);
+      }else{
+        crudService.add('roles',this.actualRol).then(ok).catch(fail).then(final);
+      }
     }
   }
 };

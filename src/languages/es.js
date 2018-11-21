@@ -46,7 +46,10 @@ export default {
       createAccount:'crear una cuenta',
       register:'registro',
       backLogin:'volver a inicio',
-      create:'crear'
+      create:'crear',
+      add:'añadir',
+      get:'obtener',
+      updateRemove: 'actualizar y eliminar'
     },
     messages: {
       error: {
