@@ -28,27 +28,28 @@ export default {
       all_priv: 'all privileges',
       name: 'name',
       email: 'email',
-      username:'username',
-      password:'password',
+      username: 'username',
+      password: 'password',
       remember: 'remember  me',
-      login:'log in',
-      logout:'logout',
-      welcome:'welcome',
-      newPassword:'type new password',
+      login: 'log in',
+      logout: 'logout',
+      welcome: 'welcome',
+      newPassword: 'type new password',
       repeatPassword: 'confirm your password',
       changePassword: 'change password',
-      lists:{
-        user:'users list',
-        role:'roles list',
-        privilege:'privileges list'
+      lists: {
+        user: 'users list',
+        role: 'roles list',
+        privilege: 'privileges list'
       },
-      createAccount:'create account',
-      register:'register',
+      createAccount: 'create account',
+      register: 'register',
       backLogin: 'back to home',
-      create:'create',
-      add:'add',
-      get:'get',
-      updateRemove: 'update and remove'
+      create: 'create',
+      add: 'add',
+      get: 'get',
+      updateRemove: 'update and remove',
+      authorityLevel:' authority level'
     },
     messages: {
       error: {
@@ -62,6 +63,12 @@ export default {
         update: 'resource updated successfully',
         remove: 'resource removed successfully',
         add: 'resource added successfully'
+      },
+      success: {
+        checkEmail: {
+          title: 'check your email',
+          text: 'We sent an email with your access data'
+        }
       }
     },
   }

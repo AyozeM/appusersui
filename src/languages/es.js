@@ -29,27 +29,28 @@ export default {
       all_priv: 'todos los privilegios',
       name: 'nombre',
       email: 'correo electronico',
-      username:'nombre de usuario',
+      username: 'nombre de usuario',
       password: 'contraseña',
       remember: 'recuérdame',
       login: 'iniciar sesión',
       logout: 'cerrar sesión',
       welcome: 'Bienvenido',
-      newPassword:'escribe una contraseña nueva',
+      newPassword: 'escribe una contraseña nueva',
       repeatPassword: 'confirma la contraseña',
       changePassword: 'cambiar contraseña',
-      lists:{
-        user:'listado de usuarios',
-        role:'listado de roles',
-        privilege:'listado de privilegios'
+      lists: {
+        user: 'listado de usuarios',
+        role: 'listado de roles',
+        privilege: 'listado de privilegios'
       },
-      createAccount:'crear una cuenta',
-      register:'registro',
-      backLogin:'volver a inicio',
-      create:'crear',
-      add:'añadir',
-      get:'obtener',
-      updateRemove: 'actualizar y eliminar'
+      createAccount: 'crear una cuenta',
+      register: 'registro',
+      backLogin: 'volver a inicio',
+      create: 'crear',
+      add: 'añadir',
+      get: 'obtener',
+      updateRemove: 'actualizar y eliminar',
+      authorityLevel:' nivel de autoridad'
     },
     messages: {
       error: {
@@ -59,10 +60,16 @@ export default {
         remove: 'error al eliminar',
         unexpected: 'error inesperado, compruebe que la conexion a internet es correcta y vuelva a intentarlo mas tarde',
       },
-      info:{
+      info: {
         update: 'recurso actualizado correctamente',
         remove: 'recurso eliminado correctamente',
         add: 'recurso añadido correctamente',
+      },
+      success: {
+        checkEmail: {
+          title: 'revisa tu correo',
+          text: 'hemos enviado tus datos acceso por email'
+        }
       }
     },
   }

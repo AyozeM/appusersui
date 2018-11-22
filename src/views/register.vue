@@ -1,5 +1,9 @@
 <template>
   <section class="mt-4">
+    <!-- Mensajes -->
+    <transition name="animate.css" enter-active-class="animated bounceInDown" leave-active-class="animated bounceOutUp">
+      <alert :message="message.text" v-if="message.text" @finalizado="alertEnd" :severity="message.severity" :interval="2" :title="message.title" />
+    </transition>
     <header class="d-flex border-bottom justify-content-center">
       <h1>{{$t('views.register')}}</h1>
     </header>
@@ -25,15 +29,21 @@
 <script>
 import buttonLoading from "../components/loadingButton";
 import { createNewAccount } from "../services/crudService.js";
+import alert from '../components/message';
 export default {
-  components: { buttonLoading },
+  components: { buttonLoading, alert },
   data() {
     return {
       form: {
         name: "",
         email: ""
       },
-      showSpinner: false
+      showSpinner: false,
+      message:{
+        title:null,
+        text:null,
+        severity:null
+      }
     };
   },
   computed: {
@@ -43,12 +53,12 @@ export default {
   },
   methods: {
     createAccount() {
-      //this.showSpinner = !this.showSpinner;
       this.showSpinner = true;
       createNewAccount(this.form)
         .then(ok => {
-          console.log(ok.data);
-          this.$router.push("/login");
+          this.message.title = this.$t('messages.success.checkEmail.title')
+          this.message.text = this.$t('messages.success.checkEmail.text')
+          this.message.severity = 'success'
         })
         .catch(error => {
           console.error(error);
@@ -57,6 +67,11 @@ export default {
         .then(() => {
           this.showSpinner = false;
         });
+    },
+    alertEnd(){
+      this.message.text = null;
+      this.message.title = null;
+      this.$router.push("/login");
     }
   }
 };

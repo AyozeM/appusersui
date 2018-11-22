@@ -8,11 +8,17 @@
     </transition>
     <!-- Formulario -->
     <h5 v-if="id">ID  {{privilege.id}}</h5>
-    <label for="name">
-      <span>{{ $t('views.name') }}</span>
-      <input type="text" name="name" id="name" v-model="privilege.name" placeholder="Escriba el nombre del nuevo privilegio" class="form-control">
-    </label>
-    <radio-group v-model="privilege.authorization" :options="authorities" name="authorities"/>
+    <div class="row">
+      <label for="name">
+        <span>{{ $t('views.name') }}</span>
+        <input type="text" name="name" id="name" v-model="privilege.name" placeholder="Escriba el nombre del nuevo privilegio" class="form-control">
+      </label>
+      <div class="ml-3 d-flex
+      flex-column justify-content-end pb-3">
+        <span>{{$t('views.authorityLevel')}}</span>
+        <radio-group v-model="privilege.authorization" :options="authorities" name="authorities"/>
+      </div>
+    </div>
     <loading-button :isLoading="showSpinner" @press-down="sendForm">
       <span v-if="id">{{ $t('buttons.update') }}</span>
       <span v-else>{{ $t('buttons.create') }}</span>
